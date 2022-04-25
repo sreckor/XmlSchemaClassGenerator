@@ -297,7 +297,7 @@ namespace XmlSchemaClassGenerator
         public bool UseArrayItemAttribute
         {
             get { return _configuration.UseArrayItemAttribute; }
-            set {  _configuration.UseArrayItemAttribute = value;}
+            set { _configuration.UseArrayItemAttribute = value; }
         }
 
         public bool GenerateCommandLineArgumentsComment
@@ -312,7 +312,11 @@ namespace XmlSchemaClassGenerator
             set { _configuration.CommandLineArgumentsProvider = value; }
         }
 
-        public bool UseStringInsteadOfEnum { get; set; }
+        public bool UseStringInsteadOfEnum 
+        { 
+            get { return _configuration.UseStringInsteadOfEnum; }
+            set { _configuration.UseStringInsteadOfEnum = value; }
+        }
 
         static Generator()
         {
