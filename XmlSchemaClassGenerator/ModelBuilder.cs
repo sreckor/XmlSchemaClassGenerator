@@ -661,12 +661,30 @@ namespace XmlSchemaClassGenerator
 
             if (facets.Any())
             {
+                restrictions = GetRestrictions(facets, simpleType).Where(r => r != null).Sanitize().ToList();
+
                 var enumFacets = facets.OfType<XmlSchemaEnumerationFacet>().ToList();
                 // If there are other restrictions mixed into the enumeration values, we'll generate a string to play it safe.
                 var isEnum = enumFacets.Any() && allBasesHaveEnums;
 
-                if (isEnum && !_configuration.UseStringInsteadOfEnum)
+                if (isEnum)
                 {
+                    if (_configuration.UseStringInsteadOfEnum)
+                    {
+                        var simpleEnumModelName = _configuration.NamingProvider.SimpleTypeNameFromQualifiedName(qualifiedName, simpleType);
+                        if (namespaceModel != null) { simpleEnumModelName = namespaceModel.GetUniqueTypeName(simpleEnumModelName); }
+                        var simpleEnum = new SimpleModel(_configuration)
+                        {
+                            Name = simpleEnumModelName,
+                            Namespace = namespaceModel,
+                            XmlSchemaName = qualifiedName,
+                            XmlSchemaType = simpleType,
+                            ValueType = simpleType.Datatype.GetEffectiveType(_configuration, restrictions),
+                        };
+
+                        return simpleEnum;
+                    }
+
                     // we got an enum
                     var name = _configuration.NamingProvider.EnumTypeNameFromQualifiedName(qualifiedName, simpleType);
                     if (namespaceModel != null) { name = namespaceModel.GetUniqueTypeName(name); }
@@ -715,7 +733,6 @@ namespace XmlSchemaClassGenerator
                     return enumModel;
                 }
 
-                restrictions = GetRestrictions(facets, simpleType).Where(r => r != null).Sanitize().ToList();
             }
 
             var simpleModelName = _configuration.NamingProvider.SimpleTypeNameFromQualifiedName(qualifiedName, simpleType);

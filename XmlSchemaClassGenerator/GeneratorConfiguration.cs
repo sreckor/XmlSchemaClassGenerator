@@ -36,7 +36,7 @@ namespace XmlSchemaClassGenerator
             MemberVisitor = (member, model) => { };
             TypeVisitor = (type, model) => { };
             NamingProvider = new NamingProvider(NamingScheme);
-            Version = new VersionProvider("XmlSchemaClassGenerator", "2.0.566.0");//VersionProvider.CreateFromAssembly();
+            Version = VersionProvider.CreateFromAssembly();
             EnableUpaCheck = true;
             CommandLineArgumentsProvider = CommandLineArgumentsProvider.CreateFromEnvironment();
         }

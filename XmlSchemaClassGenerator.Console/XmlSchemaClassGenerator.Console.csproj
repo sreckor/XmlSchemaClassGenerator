@@ -6,6 +6,7 @@
     <AppVeyor_Build_Version Condition="'$(APPVEYOR_BUILD_VERSION)' == ''">2.0.566</AppVeyor_Build_Version>
     <AssemblyVersion>$(AppVeyor_Build_Version).0</AssemblyVersion>
     <FileVersion>$(AppVeyor_Build_Version).0</FileVersion>
+	<Version>$(AppVeyor_Build_Version).0</Version>
     <PackageVersion>$(AppVeyor_Build_Version)</PackageVersion>
     <TargetFramework>net48</TargetFramework>
     <AssemblyName>XmlSchemaClassGenerator.Console</AssemblyName>

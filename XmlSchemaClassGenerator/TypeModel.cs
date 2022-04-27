@@ -932,6 +932,22 @@ namespace XmlSchemaClassGenerator
                         }
                     });
                 }
+                else if (isNullableReferenceType && !IsAttribute && Configuration.UseShouldSerializePattern)
+                {
+                    member = new CodeMemberField(typeReference, propertyName);
+                    typeDeclaration.Members.Add(new CodeMemberMethod
+                    {
+                        Attributes = MemberAttributes.Public,
+                        Name = "ShouldSerialize" + propertyName,
+                        ReturnType = new CodeTypeReference(typeof(bool)),
+                        Statements =
+                        {
+                            new CodeSnippetExpression((IsCollection || IsArray) ? $"return {propertyName}.Count != 0" :
+                                PropertyType.XmlSchemaType?.Datatype?.TypeCode == XmlTypeCode.String ? $"return !string.IsNullOrEmpty({propertyName})" :                                
+                                $"return {propertyName} != null")
+                        }
+                    });
+                }
                 else
                     member = new CodeMemberField(typeReference, propertyName);
 
