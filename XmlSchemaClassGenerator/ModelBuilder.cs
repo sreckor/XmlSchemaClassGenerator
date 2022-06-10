@@ -841,7 +841,7 @@ namespace XmlSchemaClassGenerator
                             XmlSchemaName = attribute.QualifiedName,
                             Type = CreateTypeModel(attribute.AttributeSchemaType, attributeQualifiedName),
                             IsAttribute = true,
-                            IsNullable = attribute.Use != XmlSchemaUse.Required,
+                            IsNullable = attribute.Use != XmlSchemaUse.Required || _configuration.ForceNullable,
                             DefaultValue = attribute.DefaultValue ?? (attribute.Use != XmlSchemaUse.Optional ? attribute.FixedValue : null),
                             FixedValue = attribute.FixedValue,
                             XmlNamespace = !string.IsNullOrEmpty(attribute.QualifiedName.Namespace) && attribute.QualifiedName.Namespace != typeModel.XmlSchemaName.Namespace ? attribute.QualifiedName.Namespace : null,
@@ -951,7 +951,7 @@ namespace XmlSchemaClassGenerator
                         OriginalPropertyName = originalPropertyName,
                         Type = substitute?.Type ?? CreateTypeModel(element.ElementSchemaType, elementQualifiedName),
                         IsNillable = element.IsNillable,
-                        IsNullable = item.MinOccurs < 1.0m || (item.XmlParent is XmlSchemaChoice),
+                        IsNullable = _configuration.ForceNullable || item.MinOccurs < 1.0m || (item.XmlParent is XmlSchemaChoice),
                         IsCollection = item.MaxOccurs > 1.0m || particle.MaxOccurs > 1.0m, // http://msdn.microsoft.com/en-us/library/vstudio/d3hx2s7e(v=vs.100).aspx
                         DefaultValue = element.DefaultValue ?? ((item.MinOccurs >= 1.0m && item.XmlParent is not XmlSchemaChoice) ? element.FixedValue : null),
                         FixedValue = element.FixedValue,

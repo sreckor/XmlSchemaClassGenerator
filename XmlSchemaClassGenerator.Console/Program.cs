@@ -58,6 +58,7 @@ namespace XmlSchemaClassGenerator.Console
             var generateCommandLineArgs = true;
             var useArrayItemAttribute = true;
             var useStringAsEnum = false;
+            var forceNullable = false;
             var dataAnnotationMode = DataAnnotationMode.All;
 
             var options = new OptionSet {
@@ -134,6 +135,7 @@ without backing field initialization for collections
                 { "nr|nullableReferenceAttributes", "generate attributes for nullable reference types (default is false)", v => nullableReferenceAttributes = v != null },
                 { "ar|useArrayItemAttribute", "use ArrayItemAttribute for sequences with single elements (default is true)", v => useArrayItemAttribute = v != null },
                 { "se|useStringAsEnum", "use String Properties instead of Enum types (default is false)", v => useStringAsEnum = v != null },
+                { "fn|forceNullable", "force required primitives to serialize as nullable (default is false)", v => forceNullable = v != null },
                 { "dam|dataAnnotationMode=", "All, Partial, None (default is All)", v => dataAnnotationMode = (DataAnnotationMode)Enum.Parse(typeof(DataAnnotationMode), v) },
                 { "ca|commandArgs", "generate a comment with the exact command line arguments that were used to generate the source code (default is true)", v => generateCommandLineArgs = v != null },
             };
@@ -215,6 +217,7 @@ without backing field initialization for collections
                 GenerateCommandLineArgumentsComment = generateCommandLineArgs,
                 UseArrayItemAttribute = useArrayItemAttribute,
                 UseStringInsteadOfEnum = useStringAsEnum,
+                ForceNullable = forceNullable,
                 DataAnnotationMode = dataAnnotationMode
             };
 

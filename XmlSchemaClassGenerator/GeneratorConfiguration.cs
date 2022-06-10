@@ -331,5 +331,6 @@ namespace XmlSchemaClassGenerator
         /// Generates a string Property for Enum types
         /// </summary>
         public bool UseStringInsteadOfEnum { get; set; } = false;
+        public bool ForceNullable { get; internal set; }
     }
 }

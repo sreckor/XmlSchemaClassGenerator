@@ -312,10 +312,21 @@ namespace XmlSchemaClassGenerator
             set { _configuration.CommandLineArgumentsProvider = value; }
         }
 
-        public bool UseStringInsteadOfEnum 
-        { 
+        public bool UseStringInsteadOfEnum
+        {
             get { return _configuration.UseStringInsteadOfEnum; }
             set { _configuration.UseStringInsteadOfEnum = value; }
+        }
+        public bool ForceNullable
+        {
+            get { return _configuration.ForceNullable; }
+            set { 
+                _configuration.ForceNullable = value; 
+                if (value)
+                {
+                    _configuration.GenerateNullables = value;
+                }
+            }
         }
 
         static Generator()
