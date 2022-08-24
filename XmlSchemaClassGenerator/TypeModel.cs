@@ -780,6 +780,13 @@ namespace XmlSchemaClassGenerator
                 return Type.XmlSchemaType?.Datatype?.Variety == XmlSchemaDatatypeVariety.List;
             }
         }
+        private bool IsBoolean
+        {
+            get
+            {
+                return Type.XmlSchemaType?.Datatype?.TypeCode == XmlTypeCode.Boolean;
+            }
+        }
 
         private CodeTypeReference TypeReference
         {
@@ -928,7 +935,11 @@ namespace XmlSchemaClassGenerator
                         ReturnType = new CodeTypeReference(typeof(bool)),
                         Statements =
                         {
+                            string.IsNullOrEmpty(FixedValue) ?
+                            // normal nullable definition
                             new CodeSnippetExpression($"return {propertyName}.HasValue")
+                            // for nullable with fixed value, special consideration for boolean
+                            : new CodeSnippetExpression($"return {propertyName}.GetValueOrDefault() == {(IsBoolean ? (FixedValue == "1").ToString().ToLower() : FixedValue)}")
                         }
                     });
                 }
