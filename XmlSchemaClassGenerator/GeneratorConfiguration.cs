@@ -332,5 +332,6 @@ namespace XmlSchemaClassGenerator
         /// </summary>
         public bool UseStringInsteadOfEnum { get; set; } = false;
         public bool ForceNullable { get; internal set; }
+        public bool ConvertDateTimeToDateTimeOffset { get; set; } = false;
     }
 }

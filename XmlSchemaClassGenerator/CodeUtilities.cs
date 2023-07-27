@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -34,14 +35,16 @@ namespace XmlSchemaClassGenerator
             return string.Concat(privateFieldPrefix, propertyName.ToCamelCase());
         }
 
-        public static bool? IsDataTypeAttributeAllowed(this XmlSchemaDatatype type)
+        public static bool? IsDataTypeAttributeAllowed(this XmlSchemaDatatype type, GeneratorConfiguration configuration)
         {
             bool? result = type.TypeCode switch
             {
                 XmlTypeCode.AnyAtomicType => false,// union
-                XmlTypeCode.DateTime or XmlTypeCode.Time or XmlTypeCode.Date or XmlTypeCode.Base64Binary or XmlTypeCode.HexBinary => true,
+                XmlTypeCode.Time or XmlTypeCode.Date or XmlTypeCode.Base64Binary or XmlTypeCode.HexBinary => true,
                 _ => false,
             };
+
+            if (!configuration.ConvertDateTimeToDateTimeOffset && type.TypeCode == XmlTypeCode.DateTime) result = true;
 
             return result;
         }
@@ -181,6 +184,7 @@ namespace XmlSchemaClassGenerator
                 XmlTypeCode.AnyUri or XmlTypeCode.GDay or XmlTypeCode.GMonth or XmlTypeCode.GMonthDay or XmlTypeCode.GYear or XmlTypeCode.GYearMonth => typeof(string),
                 XmlTypeCode.Duration => configuration.NetCoreSpecificCode ? type.ValueType : typeof(string),
                 XmlTypeCode.Time => typeof(DateTime),
+                XmlTypeCode.DateTime => configuration.ConvertDateTimeToDateTimeOffset ? typeof(DateTimeOffset) : typeof(DateTime),
                 XmlTypeCode.Idref => typeof(string),
                 XmlTypeCode.Integer or XmlTypeCode.NegativeInteger or XmlTypeCode.NonNegativeInteger or XmlTypeCode.NonPositiveInteger or XmlTypeCode.PositiveInteger => GetIntegerDerivedType(type, configuration, restrictions),
                 _ => type.ValueType,

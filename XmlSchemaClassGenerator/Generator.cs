@@ -75,6 +75,12 @@ namespace XmlSchemaClassGenerator
             set { _configuration.UseXElementForAny = value; }
         }
 
+        public bool ConvertDateTimeToDateTimeOffset
+        {
+            get { return _configuration.ConvertDateTimeToDateTimeOffset; }
+            set { _configuration.ConvertDateTimeToDateTimeOffset = value; }
+        }
+
         /// <summary>
         /// How are the names of the created properties changed?
         /// </summary>

@@ -60,6 +60,7 @@ namespace XmlSchemaClassGenerator.Console
             var useStringAsEnum = false;
             var forceNullable = false;
             var dataAnnotationMode = DataAnnotationMode.All;
+            var convertDateTimeToDateTimeOffset = false;
 
             var options = new OptionSet {
                 { "h|help", "show this message and exit", v => showHelp = v != null },
@@ -138,6 +139,8 @@ without backing field initialization for collections
                 { "fn|forceNullable", "force required primitives to serialize as nullable (default is false)", v => forceNullable = v != null },
                 { "dam|dataAnnotationMode=", "All, Partial, None (default is All)", v => dataAnnotationMode = (DataAnnotationMode)Enum.Parse(typeof(DataAnnotationMode), v) },
                 { "ca|commandArgs", "generate a comment with the exact command line arguments that were used to generate the source code (default is true)", v => generateCommandLineArgs = v != null },
+                { "dto|convertDateTimeToDateTimeOffset", "convert DateTime to DateTimeOffset (default is false)", v => convertDateTimeToDateTimeOffset = v != null },
+                
             };
 
             var globsAndUris = options.Parse(args);
@@ -218,7 +221,8 @@ without backing field initialization for collections
                 UseArrayItemAttribute = useArrayItemAttribute,
                 UseStringInsteadOfEnum = useStringAsEnum,
                 ForceNullable = forceNullable,
-                DataAnnotationMode = dataAnnotationMode
+                DataAnnotationMode = dataAnnotationMode,
+                ConvertDateTimeToDateTimeOffset = convertDateTimeToDateTimeOffset
             };
 
             generator.CommentLanguages.AddRange(commentLanguages);

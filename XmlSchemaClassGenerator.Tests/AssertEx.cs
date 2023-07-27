@@ -40,7 +40,7 @@ namespace XmlSchemaClassGenerator.Tests
             var type2 = o2.GetType();
             Assert.Equal(type1, type2);
 
-            if (type1.IsPrimitive || type1.IsEnum || type1 == typeof(string) || type1 == typeof(System.DateTime))
+            if (type1.IsPrimitive || type1.IsEnum || type1 == typeof(string) || type1 == typeof(System.DateTime) || type1 == typeof(System.DateTimeOffset))
             {
                 Assert.Equal(o1, o2);
             }

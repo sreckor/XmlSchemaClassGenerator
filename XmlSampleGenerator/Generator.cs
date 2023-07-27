@@ -1042,10 +1042,10 @@ namespace Microsoft.Xml.XMLGen {
 
       internal class Generator_dateTime : XmlValueGenerator {
             TimeSpan  increment;
-            protected DateTime startValue = new DateTime(1900,1,1,1,1,1);
+            protected DateTimeOffset startValue = new DateTimeOffset(1900,1,1,1,1,1,new TimeSpan());
             protected TimeSpan step       = XmlConvert.ToTimeSpan("P32D");
-            protected DateTime minBound   = DateTime.MinValue;
-            protected DateTime maxBound   = DateTime.MaxValue;
+            protected DateTimeOffset minBound   = DateTimeOffset.MinValue;
+            protected DateTimeOffset maxBound   = DateTimeOffset.MaxValue;
 
             int stateStep = 1;
             public Generator_dateTime() {
@@ -1065,42 +1065,42 @@ namespace Microsoft.Xml.XMLGen {
                         maxBound = ((DateTime)genFacets.MaxExclusive).Subtract(step);
                     }
                     if ((flags & RestrictionFlags.MinInclusive) != 0) {
-                        startValue = (DateTime)genFacets.MinInclusive;
-                        minBound = startValue;
+                        startValue = (DateTimeOffset)genFacets.MinInclusive;
+                        minBound = startValue.DateTime;
                     }
                     if ((flags & RestrictionFlags.MinExclusive) != 0) {
-                        startValue = ((DateTime)genFacets.MinExclusive).Add(step);
-                        minBound = startValue;
+                        startValue = ((DateTimeOffset)genFacets.MinExclusive).Add(step);
+                        minBound = startValue.DateTime;
                     }
                     if ((flags & RestrictionFlags.Enumeration) != 0) {
                         AllowedValues = genFacets.Enumeration;
                     }
-                    if (DateTime.Compare(startValue, maxBound) == 0) {
+                    if (DateTimeOffset.Compare(startValue, maxBound) == 0) {
                         occurNum++;
                         stateStep = 2;
                     }
-                    if (DateTime.Compare(startValue, minBound) == 0) {
+                    if (DateTimeOffset.Compare(startValue, minBound) == 0) {
                         stateStep = 2;
                     }
                 }
             }
             public override string GenerateValue() {
-                DateTime result = GenerateDate();
-                return XmlConvert.ToString(result, XmlDateTimeSerializationMode.RoundtripKind);
+                DateTimeOffset result = GenerateDate();
+                return result.ToString("o");
            }
 
-           protected DateTime GenerateDate() {
+           protected DateTimeOffset GenerateDate() {
                 if (AllowedValues != null) {
                     try {
-                        return (DateTime)AllowedValues[occurNum++ % AllowedValues.Count];
+                        return (DateTimeOffset)AllowedValues[occurNum++ % AllowedValues.Count];
                     }
                     catch(OverflowException) {
                         occurNum = 0;
-                        return (DateTime)AllowedValues[occurNum++];
+                        return (DateTimeOffset)AllowedValues[occurNum++];
                     }
                 }
                 else {
-                    DateTime result = DateTime.UtcNow;
+                DateTimeOffset result = DateTimeOffset.UtcNow;
                     try {
                         AddSubtractState state = states[occurNum % states.Length];
                         switch (state) {
@@ -1143,14 +1143,14 @@ namespace Microsoft.Xml.XMLGen {
                 }
            }
 
-            private DateTime ResetState() {
+            private DateTimeOffset ResetState() {
                 increment = TimeSpan.Zero;
                 occurNum = 0;
-                if (DateTime.Compare(startValue, maxBound) == 0) {
+                if (DateTimeOffset.Compare(startValue, maxBound) == 0) {
                     occurNum++;
                     stateStep = 2;
                 }
-                if (DateTime.Compare(startValue, minBound) == 0) {
+                if (DateTimeOffset.Compare(startValue, minBound) == 0) {
                     stateStep = 2;
                 }
                 return startValue;
@@ -1162,7 +1162,7 @@ namespace Microsoft.Xml.XMLGen {
             }
 
             public override string GenerateValue() {
-                DateTime result = GenerateDate();
+            DateTimeOffset result = GenerateDate();
                 return XmlConvert.ToString(result.Date, "yyyy-MM-dd");
             }
       }
@@ -1174,7 +1174,7 @@ namespace Microsoft.Xml.XMLGen {
             }
 
             public override string GenerateValue() {
-                DateTime result = GenerateDate();
+                DateTimeOffset result = GenerateDate();
                 return XmlConvert.ToString(result.Date, "yyyy-MM");
             }
       }
@@ -1186,7 +1186,7 @@ namespace Microsoft.Xml.XMLGen {
             }
 
             public override string GenerateValue() {
-                DateTime result = GenerateDate();
+                DateTimeOffset result = GenerateDate();
                 return XmlConvert.ToString(result.Date, "yyyy");
             }
       }
@@ -1198,7 +1198,7 @@ namespace Microsoft.Xml.XMLGen {
             }
 
             public override string GenerateValue() {
-                DateTime result = GenerateDate();
+                DateTimeOffset result = GenerateDate();
                 return XmlConvert.ToString(result.Date, "--MM-dd");
             }
       }
@@ -1208,7 +1208,7 @@ namespace Microsoft.Xml.XMLGen {
             }
 
             public override string GenerateValue() {
-                DateTime result = GenerateDate();
+                DateTimeOffset result = GenerateDate();
                 return XmlConvert.ToString(result.Date, "---dd");
             }
       }
@@ -1220,8 +1220,8 @@ namespace Microsoft.Xml.XMLGen {
             }
 
             public override string GenerateValue() {
-                DateTime result = GenerateDate();
-                return XmlConvert.ToString(GenerateDate().Date, "--MM--");
+                DateTimeOffset result = GenerateDate();
+                return XmlConvert.ToString(result.Date, "--MM--");
             }
       }
 

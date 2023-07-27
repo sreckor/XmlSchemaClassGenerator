@@ -400,7 +400,7 @@ namespace XmlSchemaClassGenerator
                         docs.AddRange(simpleModel.Restrictions.Select(r => new DocumentationModel { Language = "en", Text = r.Description }));
                         member.CustomAttributes.AddRange(simpleModel.GetRestrictionAttributes().ToArray());
 
-                        if (simpleModel.XmlSchemaType.Datatype.IsDataTypeAttributeAllowed() ?? simpleModel.UseDataTypeAttribute)
+                        if (simpleModel.XmlSchemaType.Datatype.IsDataTypeAttributeAllowed(Configuration) ?? simpleModel.UseDataTypeAttribute)
                         {
                             var name = BaseClass.GetQualifiedName();
                             if (name.Namespace == XmlSchema.Namespace)
@@ -1506,7 +1506,7 @@ namespace XmlSchemaClassGenerator
                 // XmlSerializer is inconsistent: maps xs:decimal to decimal but xs:integer to string,
                 // even though xs:integer is a restriction of xs:decimal
                 type = XmlSchemaType.Datatype.GetEffectiveType(Configuration, Restrictions, attribute);
-                UseDataTypeAttribute = XmlSchemaType.Datatype.IsDataTypeAttributeAllowed() ?? UseDataTypeAttribute;
+                UseDataTypeAttribute = XmlSchemaType.Datatype.IsDataTypeAttributeAllowed(Configuration) ?? UseDataTypeAttribute;
             }
 
             if (collection)
@@ -1548,6 +1548,12 @@ namespace XmlSchemaClassGenerator
             else if (type == typeof(DateTime))
             {
                 var rv = new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(CodeUtilities.CreateTypeReference(typeof(DateTime), Configuration)),
+                    "Parse", new CodePrimitiveExpression(defaultString));
+                return rv;
+            }
+            else if (type == typeof(DateTimeOffset))
+            {
+                var rv = new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(CodeUtilities.CreateTypeReference(typeof(DateTimeOffset), Configuration)),
                     "Parse", new CodePrimitiveExpression(defaultString));
                 return rv;
             }
